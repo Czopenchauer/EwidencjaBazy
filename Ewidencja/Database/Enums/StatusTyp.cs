@@ -4,11 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Ewidencja
+namespace Ewidencja.Database.Enums
 {
-    public class ConnectionHandler
+    public enum StatusTyp
     {
-        public string DatabaseConnection { get; set; }
-
+        Przyjety = 0,
+        Odrzucony = 1,
+        Oczekujacy = 2
     }
 }

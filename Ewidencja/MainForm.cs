@@ -1,26 +1,17 @@
-﻿using Ewidencja.Entities;
-using Microsoft.Extensions.Configuration;
+﻿using Ewidencja.Interfaces;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Ewidencja
 {
     public partial class MainForm : Form
     {
-        private readonly ApplicationDbContext ctx;
+        private readonly ILoginManager loginManager;
 
-        public MainForm(ApplicationDbContext ctx)
+        public MainForm(ILoginManager loginManager)
         {
-            this.ctx = ctx ?? throw new ArgumentNullException(nameof(ctx));
             InitializeComponent();
-
+            this.loginManager = loginManager ?? throw new ArgumentNullException(nameof(loginManager));
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -28,31 +19,47 @@ namespace Ewidencja
 
         }
 
-        private async Task<PESEL> Test()
-        {
-            var pes = new PESEL
-            {
-                NrPESEL = "11111111111",
-                Imie1 = "Jony",
-                Imie2 = "Kod",
-                DataUrodzenia = new DateTime(1999, 3, 12),
-                Plec = true,
-                Nazwisko = "Bravo",
-                MiejsceUrodzenia = "Sito",
-                KrajUrodzenia = "Litwa"
-            };
-            ctx.PESELs.Add(pes);
-            await ctx.SaveChangesAsync();
-
-            var tess = ctx.PESELs.Where(x => x.PESELID == 1).FirstOrDefault();
-
-            return tess;
-        }
-
+        // Rejestracja
         private async void button1_Click(object sender, EventArgs e)
         {
-            var task = await Test();
-            Console.WriteLine(task.ToString());
+            button1.Enabled = false;
+            var username = textBox1.Text;
+            var password = textBox2.Text;
+
+            var result = await loginManager.RegisterAsync(username, password);
+
+            if (result)
+                textBox3.Text = loginManager.SignInUser.Username;
+
+            button1.Enabled = true;
+        }
+
+        // Login
+        private async void button2_Click(object sender, EventArgs e)
+        {
+            button2.Enabled = false;
+            var username = textBox1.Text;
+            var password = textBox2.Text;
+
+            var result = await loginManager.LoginAsync(username, password);
+
+            if (result)
+                textBox3.Text = loginManager.SignInUser.Username;
+
+            button2.Enabled = true;
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            button1.Enabled = false;
+
+
+            var result = loginManager.LogOut();
+
+            if (result)
+                textBox3.Text = "Wylogowano";
+
+            button1.Enabled = true;
         }
     }
 }

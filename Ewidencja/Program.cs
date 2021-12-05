@@ -1,12 +1,11 @@
+using Ewidencja.Database;
+using Ewidencja.Interfaces;
+using Ewidencja.Managers;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Ewidencja
@@ -57,12 +56,12 @@ namespace Ewidencja
 
         private static void ConfigureServices(ServiceCollection services)
         {
+            services.AddScoped<ILoginManager, LoginManager>();
             //services.Configure<ConnectionHandler>(Configuration.GetSection(nameof(ConnectionHandler)));
             services.AddScoped<MainForm>();
-            //services.AddSingleton(Configuration);
             services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(Configuration["DatabaseConnection"]));
+            //services.AddSingleton(Configuration);
             //services.AddSingleton(ConnectionHandler);
-
         }
     }
 }
