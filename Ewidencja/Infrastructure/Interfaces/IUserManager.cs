@@ -1,8 +1,6 @@
 ﻿using Ewidencja.Database.Entities;
-using System;
+using Ewidencja.Models;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Ewidencja.Infrastructure.Interfaces
@@ -11,7 +9,7 @@ namespace Ewidencja.Infrastructure.Interfaces
     {
 
         Task<IEnumerable<Typ>> GetAvailableWnioskiAsync();
-        Task<IEnumerable<Wniosek>> GetUserWnioskiAsync(int id);
+        Task<IEnumerable<WniosekModel>> GetUserWnioskiAsync(int id);
 
         Task<Formularz> GetFormularzAsync(Typ typ);
         Task<bool> AddWniosekAsync(Wniosek wniosek);

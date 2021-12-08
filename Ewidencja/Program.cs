@@ -1,5 +1,7 @@
 using Ewidencja.Database;
 using Ewidencja.Database.Enums;
+using Ewidencja.Infrastructure.Interfaces;
+using Ewidencja.Infrastructure.Managers;
 using Ewidencja.Interfaces;
 using Ewidencja.Managers;
 using Microsoft.EntityFrameworkCore;
@@ -71,6 +73,9 @@ namespace Ewidencja
         private static void ConfigureServices(ServiceCollection services)
         {
             services.AddScoped<ILoginManager, LoginManager>();
+            services.AddScoped<IUserManager, UserManager>();
+            services.AddScoped<IUrzednikManager, UrzednikManager>();
+
             //services.Configure<ConnectionHandler>(Configuration.GetSection(nameof(ConnectionHandler)));
             services.AddScoped<UrzednikForm>();
             services.AddScoped<UserForm>();

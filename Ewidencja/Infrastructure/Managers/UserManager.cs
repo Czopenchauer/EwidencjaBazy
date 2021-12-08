@@ -1,6 +1,8 @@
 ﻿using Ewidencja.Database;
 using Ewidencja.Database.Entities;
+using Ewidencja.Helper;
 using Ewidencja.Infrastructure.Interfaces;
+using Ewidencja.Models;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -43,10 +45,15 @@ namespace Ewidencja.Infrastructure.Managers
                 .FirstOrDefaultAsync(x => x.FormularzTyp.Equals(typ));
         }
 
-        public async Task<IEnumerable<Wniosek>> GetUserWnioskiAsync(int id)
+        public async Task<IEnumerable<WniosekModel>> GetUserWnioskiAsync(int id)
         {
             return await ctx.Wnioski
                 .Where(x => x.UserId == id)
+                .Select(x => new WniosekModel
+                {
+                    Typ = x.Typ.GetNameOfType(),
+                    Status = x.Status.GetNameOfType()
+                })
                 .ToArrayAsync();
         }
     }
