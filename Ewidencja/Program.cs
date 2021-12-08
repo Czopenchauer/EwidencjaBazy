@@ -1,4 +1,5 @@
 using Ewidencja.Database;
+using Ewidencja.Database.Enums;
 using Ewidencja.Interfaces;
 using Ewidencja.Managers;
 using Microsoft.EntityFrameworkCore;
@@ -48,17 +49,32 @@ namespace Ewidencja
 
             using (ServiceProvider serviceProvider = services.BuildServiceProvider())
             {
-                var form = serviceProvider.GetRequiredService<MainForm>();
-                Application.Run(form);
-            }
+                var userForm = serviceProvider.GetRequiredService<UserForm>();
+                var urzednikForm = serviceProvider.GetRequiredService<UrzednikForm>();
+                var loginForm = serviceProvider.GetRequiredService<LoginForm>();
 
+                Application.Run(loginForm);
+
+                switch (loginForm.UserSuccessfullyAuthenticated) 
+                {
+                    case LoginState.NotCorrect: return;
+                    case LoginState.User: 
+                        Application.Run(userForm);
+                        break;
+                    case LoginState.Urzednik:
+                        Application.Run(urzednikForm);
+                        break;
+                }
+            }
         }
 
         private static void ConfigureServices(ServiceCollection services)
         {
             services.AddScoped<ILoginManager, LoginManager>();
             //services.Configure<ConnectionHandler>(Configuration.GetSection(nameof(ConnectionHandler)));
-            services.AddScoped<MainForm>();
+            services.AddScoped<UrzednikForm>();
+            services.AddScoped<UserForm>();
+            services.AddScoped<LoginForm>();
             services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(Configuration["DatabaseConnection"]));
             //services.AddSingleton(Configuration);
             //services.AddSingleton(ConnectionHandler);

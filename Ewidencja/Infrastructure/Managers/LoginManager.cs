@@ -1,5 +1,6 @@
 ﻿using Ewidencja.Database;
 using Ewidencja.Database.Entities;
+using Ewidencja.Database.Enums;
 using Ewidencja.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -29,7 +30,7 @@ namespace Ewidencja.Managers
             if (String.IsNullOrEmpty(username) || String.IsNullOrEmpty(password))
                 return false;
 
-            var existingUser = await ctx.Users.Where(x => x.Username.Equals(username) && x.Password.Equals(password)).FirstOrDefaultAsync();
+            var existingUser = await ctx.Users.Where(x => x.Username.Equals(username)).FirstOrDefaultAsync();
             if (existingUser is not null)
                 return false;
 
@@ -47,27 +48,28 @@ namespace Ewidencja.Managers
             return false;
         }
 
-        public async Task<bool> LoginAsync(string username, string password)
+        public async Task<LoginState> LoginAsync(string username, string password)
         {
             if (SignInUser is not null || (String.IsNullOrEmpty(username) || String.IsNullOrEmpty(password)))
-                return false;
+                return LoginState.NotCorrect;
 
             var existingUser = await ctx.Users.Where(x => x.Username.Equals(username) && x.Password.Equals(password)).FirstOrDefaultAsync();
             if (existingUser is null)
-                return false;
+                return LoginState.NotCorrect;
 
             SignInUser = existingUser;
-            return true;
+
+            return existingUser.Rola ? LoginState.Urzednik : LoginState.User;
         }
 
-        public async Task<bool> RegisterAsync(string username, string password)
+        public async Task<LoginState> RegisterAsync(string username, string password)
         {
             if (String.IsNullOrEmpty(username) || String.IsNullOrEmpty(password))
-                return false;
+                return LoginState.NotCorrect;
 
-            var existingUser = await ctx.Users.Where(x => x.Username.Equals(username) && x.Password.Equals(password)).FirstOrDefaultAsync();
+            var existingUser = await ctx.Users.Where(x => x.Username.Equals(username)).FirstOrDefaultAsync();
             if (existingUser is not null)
-                return false;
+                return LoginState.NotCorrect;
 
             var user = new User 
             {
@@ -81,10 +83,10 @@ namespace Ewidencja.Managers
             if ((await ctx.SaveChangesAsync() > 0))
             {
                 SignInUser = user;
-                return true;
+                return user.Rola ? LoginState.Urzednik : LoginState.User;
             }
 
-            return false;
+            return LoginState.NotCorrect;
         }
 
         public bool LogOut()

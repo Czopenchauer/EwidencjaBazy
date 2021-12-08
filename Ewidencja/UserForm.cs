@@ -4,11 +4,11 @@ using System.Windows.Forms;
 
 namespace Ewidencja
 {
-    public partial class MainForm : Form
+    public partial class UserForm : Form
     {
         private readonly ILoginManager loginManager;
 
-        public MainForm(ILoginManager loginManager)
+        public UserForm(ILoginManager loginManager)
         {
             InitializeComponent();
             this.loginManager = loginManager ?? throw new ArgumentNullException(nameof(loginManager));
