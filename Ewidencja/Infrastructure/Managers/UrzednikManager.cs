@@ -6,8 +6,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Ewidencja.Infrastructure.Managers
@@ -21,7 +19,7 @@ namespace Ewidencja.Infrastructure.Managers
             this.ctx = ctx ?? throw new ArgumentNullException(nameof(ctx));
         }
 
-        public ArrayList ReadWniosek(string wniosek)
+        private ArrayList ReadWniosek(string wniosek)
         {
             var input = new ArrayList();
             StringReader strReader = new StringReader(wniosek);
@@ -47,7 +45,7 @@ namespace Ewidencja.Infrastructure.Managers
             if (wniosek is null || user is null)
                 return false;
 
-            switch (wniosek.Typ.Rodzaj)
+            /*switch (wniosek.Typ.Rodzaj)
             {
                 case WniosekTyp.NadajPesel:
                     if (decision)
@@ -71,7 +69,7 @@ namespace Ewidencja.Infrastructure.Managers
                         }
                     }
                     break;
-            }
+            }*/
 
             return true;
         }

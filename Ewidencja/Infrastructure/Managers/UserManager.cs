@@ -20,10 +20,27 @@ namespace Ewidencja.Infrastructure.Managers
             this.ctx = ctx ?? throw new ArgumentNullException(nameof(ctx));
         }
 
-        public async Task<bool> AddWniosekAsync(Wniosek wniosek)
+        // Rozszerzam funkcjonalnosc o dodawanie typu, statusu i przypisywanie usera do wniosku
+        // Zamiast argumentu Wniosek jest jego DTO WniosekModel
+        public async Task<bool> AddWniosekAsync(WniosekModel wniosekModel, User user)
         {
-            if (wniosek is null)
+            if (wniosekModel is null)
                 return false;
+
+            var status = await ctx.Status.FirstOrDefaultAsync(x => x.Stan.Equals(wniosekModel.Status));
+            var typ = await ctx.Typ.FirstOrDefaultAsync(x => x.Rodzaj.Equals(wniosekModel.Typ));
+
+            if (status == null || typ == null)
+                return false;
+
+            var wniosek = new Wniosek
+            {
+                Formularz = wniosekModel.Wniosek,
+                Data = wniosekModel.Data,
+                User = user,
+                Status = status,
+                Typ = typ,              
+            };
 
             ctx.Wnioski.Add(wniosek);
 
@@ -39,10 +56,10 @@ namespace Ewidencja.Infrastructure.Managers
                 .ToArrayAsync();
         }
 
-        public async Task<Formularz> GetFormularzAsync(Typ typ)
+        public async Task<Formularz> GetFormularzAsync(string typ)
         {
             return await ctx.Formularze
-                .FirstOrDefaultAsync(x => x.FormularzTyp.Equals(typ));
+                .FirstOrDefaultAsync(x => x.FormularzTyp.Rodzaj.Equals(typ));
         }
 
         public async Task<IEnumerable<WniosekModel>> GetUserWnioskiAsync(int id)
@@ -51,10 +68,37 @@ namespace Ewidencja.Infrastructure.Managers
                 .Where(x => x.UserId == id)
                 .Select(x => new WniosekModel
                 {
-                    Typ = x.Typ.GetNameOfType(),
-                    Status = x.Status.GetNameOfType()
+                    Typ = x.Typ.Rodzaj,
+                    Status = x.Status.Stan,
+                    Data = x.Data
                 })
                 .ToArrayAsync();
+        }
+
+        public async Task<IEnumerable<TypModel>> GetTypesAsync()
+        {
+            return await ctx.Typ
+                .Select(x => new TypModel
+                {
+                    TypName = x.Rodzaj
+                }).ToArrayAsync();
+        }
+
+        public async Task<bool> AddFormularz(string formularz, int id)
+        {
+            var typ = await ctx.Typ.Where(x => x.Id == id).FirstOrDefaultAsync();
+            var toCreate = new Formularz
+            {
+                TypId = typ.Id,
+                FormularzTyp = typ,
+                Template = formularz
+            };
+            ctx.Formularze.Add(toCreate);
+
+            if ((await ctx.SaveChangesAsync() > 0))
+                return true;
+
+            return false;
         }
     }
 }

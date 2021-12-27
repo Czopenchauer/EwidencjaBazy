@@ -9,7 +9,7 @@ namespace Ewidencja
     {
         private readonly ILoginManager loginManager;
 
-        public LoginState UserSuccessfullyAuthenticated { get; set; }
+        public LoginState UserSuccessfullyAuthenticated { get; set; } = LoginState.NotCorrect;
 
         public LoginForm(ILoginManager loginManager)
         {
@@ -20,7 +20,6 @@ namespace Ewidencja
 
         private void LoginForm_Load(object sender, EventArgs e)
         {
-
             textBoxPassword.PasswordChar = '*';
             textBoxPassword.MaxLength = 20;
             textBoxUsername.MaxLength = 20;

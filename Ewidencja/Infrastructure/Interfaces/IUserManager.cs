@@ -10,8 +10,11 @@ namespace Ewidencja.Infrastructure.Interfaces
 
         Task<IEnumerable<Typ>> GetAvailableWnioskiAsync();
         Task<IEnumerable<WniosekModel>> GetUserWnioskiAsync(int id);
+        Task<IEnumerable<TypModel>> GetTypesAsync();
 
-        Task<Formularz> GetFormularzAsync(Typ typ);
-        Task<bool> AddWniosekAsync(Wniosek wniosek);
+        Task<Formularz> GetFormularzAsync(string typ);
+        Task<bool> AddWniosekAsync(WniosekModel wniosekModel, User user);
+
+        Task<bool> AddFormularz(string formularz, int id);
     }
 }

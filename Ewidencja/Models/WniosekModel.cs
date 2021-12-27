@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Ewidencja.Models
 {
@@ -11,5 +7,9 @@ namespace Ewidencja.Models
         public string Typ { get; set; }
 
         public string Status { get; set; }
+
+        public DateTime Data { get; set; }
+
+        public string Wniosek { get; set; } = null;
     }
 }

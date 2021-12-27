@@ -41,6 +41,7 @@ namespace Ewidencja.Database
         {
             //base.OnModelCreating(modelBuilder);
 
+            #region Table setup
             modelBuilder.Entity<PESEL>()
                 .ToTable("PESEL");
 
@@ -67,6 +68,22 @@ namespace Ewidencja.Database
 
             modelBuilder.Entity<Status>()
                 .ToTable("Status");
+            #endregion
+
+
+            // TODO dodaj relacje pomiedzy tabelami
+            #region Relationship setup
+
+/*            modelBuilder.Entity<PESEL>()
+                .HasKey(x => x.Id);
+
+            modelBuilder.Entity<PESEL>()
+                .HasMany(ed => ed.Edycjas)
+                .WithOne(e => e.PESEL)
+                .HasForeignKey(x => x.PESEL)
+                .OnDelete(DeleteBehavior.Restrict);*/
+
+            #endregion
         }
     }
 }

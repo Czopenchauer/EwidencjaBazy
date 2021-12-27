@@ -1,5 +1,5 @@
-﻿using Ewidencja.Database.Enums;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Ewidencja.Database.Entities
 {
@@ -9,7 +9,7 @@ namespace Ewidencja.Database.Entities
         public int Id { get; set; }
 
         [Required]
-        [EnumDataType(typeof(WniosekTyp))]
-        public WniosekTyp Rodzaj { get; set; }
+        [Column(TypeName = "nvarchar(50)")]
+        public string Rodzaj { get; set; }
     }
 }

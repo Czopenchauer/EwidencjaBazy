@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 
@@ -12,6 +13,10 @@ namespace Ewidencja.Database.Entities
         [Required]
         [Column(TypeName = "nvarchar(max)")]
         public string Formularz { get; set; }
+
+        [Required]
+        [Column(TypeName = "date")]
+        public DateTime Data { get; set; }
 
         [Required]
         [ForeignKey("User")]
