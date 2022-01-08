@@ -16,7 +16,7 @@ namespace Ewidencja.Database
 
         public DbSet<Zameldowanie> Zameldowanies { get; set; }
 
-        public DbSet<Wyjazdy> Wyjazdies { get; set; }
+        public DbSet<Wyjazd> Wyjazdies { get; set; }
 
         public DbSet<Edycja> Edycjas { get; set; }
 
@@ -48,7 +48,7 @@ namespace Ewidencja.Database
             modelBuilder.Entity<Zameldowanie>()
                 .ToTable("Zameldowanie");
 
-            modelBuilder.Entity<Wyjazdy>()
+            modelBuilder.Entity<Wyjazd>()
                 .ToTable("Wyjazd");
 
             modelBuilder.Entity<Edycja>()
@@ -71,19 +71,6 @@ namespace Ewidencja.Database
             #endregion
 
 
-            // TODO dodaj relacje pomiedzy tabelami
-            #region Relationship setup
-
-/*            modelBuilder.Entity<PESEL>()
-                .HasKey(x => x.Id);
-
-            modelBuilder.Entity<PESEL>()
-                .HasMany(ed => ed.Edycjas)
-                .WithOne(e => e.PESEL)
-                .HasForeignKey(x => x.PESEL)
-                .OnDelete(DeleteBehavior.Restrict);*/
-
-            #endregion
         }
     }
 }

@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Ewidencja.Database.Entities
 {
-    public class Wyjazdy
+    public class Wyjazd
     {
         [Key]
         public int Id { get; set; }

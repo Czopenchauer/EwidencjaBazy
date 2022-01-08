@@ -1,16 +1,9 @@
-﻿using Ewidencja.Database.Entities;
-using Ewidencja.Database.Enums;
-using Ewidencja.Infrastructure.Interfaces;
+﻿using Ewidencja.Infrastructure.Interfaces;
 using Ewidencja.Interfaces;
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using Ewidencja.Helper;
 using System.Text.RegularExpressions;
-using System.Diagnostics;
-using System.Drawing;
 using Ewidencja.Models;
 
 namespace Ewidencja
@@ -27,12 +20,6 @@ namespace Ewidencja
             this.userManager = userManager ?? throw new ArgumentNullException(nameof(loginManager));
         }
 
-        private async void tabPageWnioski_Click(object sender, EventArgs e)
-        {
-            dataGridViewWnioski.DataSource = await userManager.GetUserWnioskiAsync(loginManager.SignInUser.Id);
-            dataGridViewWnioski.Columns[dataGridViewWnioski.Columns.Count - 1].Visible = false;
-        }
-
         private async void UserForm_LoadAsync(object sender, EventArgs e)
         {
             var types = await userManager.GetTypesAsync();
@@ -40,6 +27,12 @@ namespace Ewidencja
             {
                 comboBoxTyp.Items.Add(typ.TypName);
             }
+
+            dataGridViewWnioski.Invoke(new Action(async () => { 
+                dataGridViewWnioski.DataSource = await userManager.GetUserWnioskiAsync(loginManager.SignInUser.Id);
+                dataGridViewWnioski.Columns[0].Visible = false;
+                dataGridViewWnioski.Columns[dataGridViewWnioski.Columns.Count - 1].Visible = false;
+            }));
         }
 
         private async void dataGridViewWnioski_CellContentClick(object sender, DataGridViewCellEventArgs e)
@@ -47,8 +40,18 @@ namespace Ewidencja
             if (e.RowIndex == -1)
                 return;
 
-            var value = dataGridViewWnioski.Rows[e.RowIndex].Cells[e.ColumnIndex].Value;
-            
+            var value = (WniosekModel)dataGridViewWnioski.CurrentRow.DataBoundItem;
+
+            var res = await userManager.GetUserFormularzAsync(value.Id);
+
+            if (String.IsNullOrEmpty(res))
+            {
+                MessageBox.Show("Wystąpił błąd podczas pobierania formularza.");
+                return;
+            }
+
+            textBoxWniosek.Text = res;
+            textBoxWniosek.Visible = true;
         }
 
         private async void buttonZloz_Click(object sender, EventArgs e)
@@ -57,6 +60,7 @@ namespace Ewidencja
 
             if (String.IsNullOrEmpty(template))
             {
+                MessageBox.Show("Nie wybrano formularza.");
                 return;
             }
 
@@ -65,58 +69,59 @@ namespace Ewidencja
                 Data = DateTime.Now,
                 Wniosek = template,
                 Typ = (string)comboBoxTyp.SelectedItem,
-                Status = StatusTyp.Oczekujacy.GetNameOfType()
+                Status = StringConstants.Oczekujacy
             };
 
             if(!(await userManager.AddWniosekAsync(wniosek, loginManager.SignInUser)))
             {
                 MessageBox.Show("Nie udało się złożyć wniosku");
+                return;
             }
 
+            dataGridViewWnioski.DataSource = await userManager.GetUserWnioskiAsync(loginManager.SignInUser.Id);
+
             // shit do dodawania formularzy do bazy
-/*            var formularz =
-                "Imię: \n" +
-                "Drugie imię: \n" +
-                "Nazwisko: \n" +
-                "Płeć: \n" +
-                "Data urodzenia: \n" +
-                "Kraj miejsca zamieszkania: \n";
+            /*            var formularz =
+                            "Imię: \n" +
+                            "Drugie imię: \n" +
+                            "Nazwisko: \n" +
+                            "Płeć: \n" +
+                            "Data urodzenia: \n" +
+                            "Kraj miejsca zamieszkania: \n";
 
-            var formularz2 =
-                "Imię: \n" +
-                "Drugie imię: \n" +
-                "Nazwisko: \n" +
-                "Nr PESEL: \n" +
-                "Kraj urodzenia: \n" +
-                "Data urodzenia: \n" +
-                "Kraj poprzedniego miejsca zamieszkania: \n" +
-                "Ulica: \n" +
-                "Nr domu: \n" +
-                "Nr lokalu: \n" +
-                "Kod pocztowy: \n" +
-                "Miejscowość: ";
+                        var formularz2 =
+                            "Imię: \n" +
+                            "Drugie imię: \n" +
+                            "Nazwisko: \n" +
+                            "Nr PESEL: \n" +
+                            "Kraj urodzenia: \n" +
+                            "Data urodzenia: \n" +
+                            "Kraj poprzedniego miejsca zamieszkania: \n" +
+                            "Ulica: \n" +
+                            "Nr domu: \n" +
+                            "Nr lokalu: \n" +
+                            "Kod pocztowy: \n" +
+                            "Miejscowość: ";
 
-            await userManager.AddFormularz(formularz2, 1);
+                        await userManager.AddFormularz(formularz2, 1);
 
-            await userManager.AddFormularz(formularz, 2);*/
+                        await userManager.AddFormularz(formularz, 2);*/
         }
         
-        // TODO do ogarniecia switch
-        // 1. Ogarnac enum WniosekTyp do stringa za pomoca extension method
-        // 2. Lub suchy string tez w EnumExtension
         private async void comboBoxTyp_SelectedIndexChanged(object sender, EventArgs e)
         {
             string selected = (string)comboBoxTyp.SelectedItem;
-            switch (comboBoxTyp.SelectedItem)
+            var text = await userManager.GetFormularzAsync(selected);
+
+            if(text == null)
             {
-                case "Nadanie numeru PESEL":
-                    var text = await userManager.GetFormularzAsync(selected);
-                    richTextBoxZloz.Text = text.Template;
-                    ProtectMySelectedText(text.Template);
-                    richTextBoxZloz.Visible = true;
-                    break;
-                    
+                MessageBox.Show($"Nie udało się znaleźć formularza {selected}");
+                return;
             }
+
+            richTextBoxZloz.Text = text.Template;
+            ProtectMySelectedText(text.Template);
+            richTextBoxZloz.Visible = true;                  
         }
 
         private void ProtectMySelectedText(string text)

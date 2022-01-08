@@ -1,18 +1,17 @@
 ﻿using Ewidencja.Database.Entities;
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using Ewidencja.Helper;
+using Ewidencja.Models;
+using Ewidencja.ResourceParameters;
 using System.Threading.Tasks;
 
 namespace Ewidencja.Infrastructure.Interfaces
 {
     public interface IUrzednikManager
     {
-        ICollection<string> ReadWniosek(string wniosek);
+        Task<PagedList<WniosekModel>> GetWnioskiAsync(ResourceParameter resourceParameter);
 
-        Task<bool> WydajDecyzjeAsync(Wniosek wniosek, bool decision, User user);
+        Task<bool> WydajDecyzjeAsync(WniosekModel wniosek, bool decision, User user);
 
+        Task<WniosekModel> GetWniosekDetailsAsync(int id);
     }
 }

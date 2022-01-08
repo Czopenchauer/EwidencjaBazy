@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -46,7 +45,7 @@ namespace Ewidencja.Database.Entities
 
         public ICollection<Zameldowanie> Zameldowanies { get; set; }
 
-        public ICollection<Wyjazdy> Wyjazdies { get; set; }
+        public ICollection<Wyjazd> Wyjazdies { get; set; }
 
     }
 }

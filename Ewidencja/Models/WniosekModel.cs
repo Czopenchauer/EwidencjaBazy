@@ -4,6 +4,8 @@ namespace Ewidencja.Models
 {
     public class WniosekModel
     {
+        public int Id { get; set; }
+
         public string Typ { get; set; }
 
         public string Status { get; set; }

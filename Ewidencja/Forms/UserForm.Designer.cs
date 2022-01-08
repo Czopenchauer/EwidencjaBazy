@@ -65,7 +65,6 @@ namespace Ewidencja
             this.tabPageWnioski.TabIndex = 0;
             this.tabPageWnioski.Text = "Wnioski";
             this.tabPageWnioski.UseVisualStyleBackColor = true;
-            this.tabPageWnioski.Click += new System.EventHandler(this.tabPageWnioski_Click);
             // 
             // textBoxWniosek
             // 

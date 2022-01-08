@@ -1,6 +1,5 @@
 ﻿using Ewidencja.Database;
 using Ewidencja.Database.Entities;
-using Ewidencja.Helper;
 using Ewidencja.Infrastructure.Interfaces;
 using Ewidencja.Models;
 using Microsoft.EntityFrameworkCore;
@@ -14,14 +13,11 @@ namespace Ewidencja.Infrastructure.Managers
     public class UserManager : IUserManager
     {
         private readonly ApplicationDbContext ctx;
-
         public UserManager(ApplicationDbContext ctx)
         {
             this.ctx = ctx ?? throw new ArgumentNullException(nameof(ctx));
         }
 
-        // Rozszerzam funkcjonalnosc o dodawanie typu, statusu i przypisywanie usera do wniosku
-        // Zamiast argumentu Wniosek jest jego DTO WniosekModel
         public async Task<bool> AddWniosekAsync(WniosekModel wniosekModel, User user)
         {
             if (wniosekModel is null)
@@ -68,6 +64,7 @@ namespace Ewidencja.Infrastructure.Managers
                 .Where(x => x.UserId == id)
                 .Select(x => new WniosekModel
                 {
+                    Id = x.Id,
                     Typ = x.Typ.Rodzaj,
                     Status = x.Status.Stan,
                     Data = x.Data
@@ -86,7 +83,7 @@ namespace Ewidencja.Infrastructure.Managers
 
         public async Task<bool> AddFormularz(string formularz, int id)
         {
-            var typ = await ctx.Typ.Where(x => x.Id == id).FirstOrDefaultAsync();
+            var typ = await ctx.Typ.FirstOrDefaultAsync(x => x.Id == id);
             var toCreate = new Formularz
             {
                 TypId = typ.Id,
@@ -99,6 +96,14 @@ namespace Ewidencja.Infrastructure.Managers
                 return true;
 
             return false;
+        }
+
+        public async Task<string> GetUserFormularzAsync(int id)
+        {
+            return await ctx.Wnioski
+                .Where(x => x.Id == id)
+                .Select(y => y.Formularz)
+                .SingleOrDefaultAsync();          
         }
     }
 }
