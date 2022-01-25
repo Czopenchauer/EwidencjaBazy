@@ -139,6 +139,7 @@ namespace Ewidencja
             this.Controls.Add(this.buttonDecision);
             this.Controls.Add(this.richTextBoxWniosek);
             this.Controls.Add(this.dataGridViewWnioski);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.Name = "UrzednikForm";
             this.Text = "UrzednikForm";
             this.Load += new System.EventHandler(this.UrzednikForm_Load);

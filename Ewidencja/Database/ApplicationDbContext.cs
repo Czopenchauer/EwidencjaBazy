@@ -9,9 +9,10 @@ namespace Ewidencja.Database
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) { }
 
         public static readonly LoggerFactory LoggerFactory = new LoggerFactory(new[] {
-            new Microsoft.Extensions.Logging.Debug.DebugLoggerProvider()
+            new Microsoft.Extensions.Logging.Debug.DebugLoggerProvider()           
         });
 
+        #region Tables
         public DbSet<PESEL> PESELs { get; set; }
 
         public DbSet<Zameldowanie> Zameldowanies { get; set; }
@@ -29,6 +30,8 @@ namespace Ewidencja.Database
         public DbSet<Typ> Typ { get; set; }
 
         public DbSet<Status> Status { get; set; }
+
+        #endregion
 
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)

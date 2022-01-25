@@ -5,6 +5,7 @@ namespace Ewidencja.Database.Entities
 {
     public class Formularz
     {
+
         [Key]
         public int Id { get; set; }
 

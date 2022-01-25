@@ -32,6 +32,12 @@ namespace Ewidencja.Infrastructure.Managers
                 var aLine = strReader.ReadLine();
                 if (aLine != null)
                 {
+                    
+                    if(aLine.Count(c => c == ':') > 2)
+                    {
+                        return null;
+                    }
+
                     var values = aLine.Split(':');
 
                     try
@@ -64,9 +70,13 @@ namespace Ewidencja.Infrastructure.Managers
             var chars = "0123456789";
             var result = new char[11];
             var random = new Random();
+            do
+            {
+                for (int i = 0; i < result.Length; i++)
+                    result[i] = chars[random.Next(chars.Length)];
 
-            for (int i = 0; i < result.Length; i++)
-                result[i] = chars[random.Next(chars.Length)];
+            } while (ctx.PESELs.FirstOrDefault(x => x.NrPESEL.Equals(new string(result))) != null);
+
 
             return new string(result);
         }
@@ -89,114 +99,126 @@ namespace Ewidencja.Infrastructure.Managers
                     if(wniosek is null)
                         return false;
 
+                    if (!decision)
+                    {
+                        wniosek.Status = await ctx.Status
+                                    .FirstOrDefaultAsync(x => x.Stan.Equals(StringConstants.Odrzucono));
+                        await ctx.SaveChangesAsync();
+
+                        await transaction.CommitAsync();
+                        return true;
+                    }
                     var input = ReadWniosek(wniosek.Formularz);
 
+                    if(input.All(x => x is null))
+                    {                       
+                        return false;
+                    }
                     var edycja = new Edycja
                     {
                         DataEdycji = DateTime.Now,
                         User = user,
                     };
 
-                    if (!decision)
+                    switch (wniosek.Typ.Rodzaj)
                     {
-                        wniosek.Status = await ctx.Status
-                                    .FirstOrDefaultAsync(x => x.Stan.Equals(StringConstants.Odrzucono));
-                    }
-                    else
-                    {
-                        switch (wniosek.Typ.Rodzaj)
-                        {
-                            case StringConstants.NadajPesel:                             
-                                var pesel = new PESEL
-                                {
-                                    NrPESEL = RandomPesel(),
-                                    Imie1 = input[0],
-                                    Imie2 = input[1],
-                                    Nazwisko = input[2],
-                                    Plec = input[3].ToUpper().Equals("M") ? true : false,
-                                    DataUrodzenia = DateTime.Parse(input[4]),
-                                    MiejsceUrodzenia = input[5],
-                                    KrajUrodzenia = input[6]
-                                };
+                        case StringConstants.NadajPesel:
+                            
+                            var pesel = new PESEL
+                            {
+                                NrPESEL = RandomPesel(),
+                                Imie1 = input[0],
+                                Imie2 = input[1],
+                                Nazwisko = input[2],
+                                Plec = input[3].ToUpper().Equals("M") ? true : false,
+                                DataUrodzenia = DateTime.Parse(input[4]),
+                                MiejsceUrodzenia = input[5],
+                                KrajUrodzenia = input[6]
+                            };
 
-                                ctx.PESELs.Add(pesel);
-                                ctx.Edycjas.Add(edycja);
+                            ctx.PESELs.Add(pesel);
+                            edycja.PESEL = pesel;
+                            ctx.Edycjas.Add(edycja);
 
-                                break;
-                            case StringConstants.Zameldowanie:
-                                var nrpesel = await ctx.PESELs
-                                    .FirstOrDefaultAsync(x => x.NrPESEL.Equals(input[2]));
+                            break;
+                        case StringConstants.Zameldowanie:
+                            var nrpesel = await ctx.PESELs
+                                .FirstOrDefaultAsync(x => x.NrPESEL.Equals(input[3]));
                                 
-                                if(nrpesel is null)
-                                {
-                                    throw new ArgumentNullException(nameof(nrpesel));
-                                }
+                            if(nrpesel is null)
+                            {
+                                return false;
+                                throw new ArgumentNullException(nameof(nrpesel));
+                            }
 
-                                var zameldowanie = new Zameldowanie
-                                {
-                                    PESEL = nrpesel,
-                                    Kraj = input[4],
-                                    Ulica = input[6],
-                                    NrDomu = input[7],
-                                    NrLokalu = input[8],
-                                    KodPocztowy = input[9],
-                                    Miejscowosc = input[10]
-                                };
+                            var zameldowanie = new Zameldowanie
+                            {
+                                PESEL = nrpesel,
+                                Kraj = input[4],
+                                Ulica = input[5],
+                                NrDomu = input[6],
+                                NrLokalu = input[7],
+                                KodPocztowy = input[8],
+                                Miejscowosc = input[9]
+                            };
+                            edycja.PESEL = nrpesel;
+                            ctx.Zameldowanies.Add(zameldowanie);
+                            ctx.Edycjas.Add(edycja);
 
-                                ctx.Zameldowanies.Add(zameldowanie);
-                                ctx.Edycjas.Add(edycja);
+                            break;
+                        case StringConstants.Wyjazd:
 
-                                break;
-                            case StringConstants.Wyjazd:
+                            nrpesel = await ctx.PESELs
+                                .FirstOrDefaultAsync(x => x.NrPESEL.Equals(input[3]));
 
-                                nrpesel = await ctx.PESELs
-                                    .FirstOrDefaultAsync(x => x.NrPESEL.Equals(input[2]));
+                            if (nrpesel is null)
+                            {
+                                return false;
 
-                                if (nrpesel is null)
-                                {
-                                    throw new ArgumentNullException(nameof(nrpesel));
-                                }
+                                throw new ArgumentNullException(nameof(nrpesel));
+                            }
 
-                                var wyjazd = new Wyjazd
-                                {
-                                    PESEL = nrpesel,
-                                    DataWyjazdu = DateTime.Parse(input[7]),
-                                    KrajWyjazdu = input[8],
-                                    Od = DateTime.Parse(input[9]),
-                                    Do = DateTime.Parse(input[10])
-                                };
-                                ctx.Edycjas.Add(edycja);
+                            var wyjazd = new Wyjazd
+                            {
+                                PESEL = nrpesel,
+                                DataWyjazdu = DateTime.Parse(input[4]),
+                                KrajWyjazdu = input[5],
+                                Od = DateTime.Parse(input[6]),
+                                Do = DateTime.Parse(input[7])
+                            };
+                            edycja.PESEL = nrpesel;
+                            ctx.Edycjas.Add(edycja);
 
-                                break;
-                            case StringConstants.DanePesel:
-                                var dane = await ctx.PESELs
-                                        .Where(x => x.NrPESEL.Equals(input[2]))
-                                        .Select(y => new string(
-                                            "Pańskie dane\n" +
-                                            $"Imię: {y.Imie1}\n" +
-                                            $"Nazwisko: {y.Nazwisko}\n" +
-                                            $"Nr PESEL: {y.NrPESEL}\n" +
-                                            $"Imie = {y.Imie1}\n" +
-                                            $"Nazwisko = {y.Nazwisko}\n" +
-                                            $"NrPesel: {y.NrPESEL}\n" +
-                                            $"DataUrodzenia: {y.DataUrodzenia}\n" +
-                                            $"MiejsceUrodzenia: {y.MiejsceUrodzenia}\n" +
-                                            $"Ulica: {y.Zameldowanies.Last().Ulica}\n" +
-                                            $"NrDomu: {y.Zameldowanies.Last().NrDomu}\n" +
-                                            $"NrLokalu: {y.Zameldowanies.Last().NrLokalu}\n" +
-                                            $"KodPocztowy: {y.Zameldowanies.Last().KodPocztowy}\n" +
-                                            $"Miejscowosc: {y.Zameldowanies.Last().Miejscowosc}\n" +
-                                            $"Kraj: {y.Zameldowanies.Last().Kraj}\n"
-                                            )).FirstOrDefaultAsync();
+                            break;
+                        case StringConstants.DanePesel:
+                            var dane = await ctx.PESELs
+                                    .Where(x => x.NrPESEL.Equals(input[3]))
+                                    .Select(y => new string(
+                                        "Pańskie dane\n" +
+                                        $"Imię: {y.Imie1}\n" +
+                                        $"Nazwisko: {y.Nazwisko}\n" +
+                                        $"Nr PESEL: {y.NrPESEL}\n" +
+                                        $"Imie = {y.Imie1}\n" +
+                                        $"Nazwisko = {y.Nazwisko}\n" +
+                                        $"NrPesel: {y.NrPESEL}\n" +
+                                        $"DataUrodzenia: {y.DataUrodzenia}\n" +
+                                        $"MiejsceUrodzenia: {y.MiejsceUrodzenia}\n" +
+                                        $"Ulica: {y.Zameldowanies.OrderByDescending(x => x.Id).Last().Ulica}\n" +
+                                        $"NrDomu: {y.Zameldowanies.OrderByDescending(x => x.Id).Last().NrDomu}\n" +
+                                        $"NrLokalu: {y.Zameldowanies.OrderByDescending(x => x.Id).Last().NrLokalu}\n" +
+                                        $"KodPocztowy: {y.Zameldowanies.OrderByDescending(x => x.Id).Last().KodPocztowy}\n" +
+                                        $"Miejscowosc: {y.Zameldowanies.OrderByDescending(x => x.Id).Last().Miejscowosc}\n" +
+                                        $"Kraj: {y.Zameldowanies.OrderByDescending(x => x.Id).Last().Kraj}\n"
+                                        )).FirstOrDefaultAsync();
 
-                                wniosek.Formularz = dane;
-                                break;
-                        }
-
-                        wniosek.Status = await ctx.Status
-                            .FirstOrDefaultAsync(x => x.Stan.Equals(StringConstants.Przyjeto));
+                            wniosek.Formularz = dane;
+                            break;
                     }
 
+                    wniosek.Status = await ctx.Status
+                        .FirstOrDefaultAsync(x => x.Stan.Equals(StringConstants.Przyjeto));
+                    
+                    //ctx.Edycjas.Add(edycja);
                     await ctx.SaveChangesAsync();
 
                     await transaction.CommitAsync();
@@ -204,7 +226,7 @@ namespace Ewidencja.Infrastructure.Managers
             }
             catch (Exception e)
             {
-                Debug.WriteLine(e.Message);
+                //Debug.WriteLine(e.Message);
 
                 return false;
             }

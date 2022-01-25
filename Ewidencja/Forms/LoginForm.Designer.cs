@@ -30,7 +30,6 @@ namespace Ewidencja
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(LoginForm));
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.labelUsername = new System.Windows.Forms.Label();
             this.textBoxUsername = new System.Windows.Forms.TextBox();
@@ -50,7 +49,6 @@ namespace Ewidencja
             // pictureBox1
             // 
             this.pictureBox1.Dock = System.Windows.Forms.DockStyle.Right;
-            this.pictureBox1.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox1.Image")));
             this.pictureBox1.Location = new System.Drawing.Point(527, 0);
             this.pictureBox1.Name = "pictureBox1";
             this.pictureBox1.Size = new System.Drawing.Size(352, 472);
@@ -63,7 +61,7 @@ namespace Ewidencja
             this.labelUsername.AutoSize = true;
             this.labelUsername.Location = new System.Drawing.Point(83, 152);
             this.labelUsername.Name = "labelUsername";
-            this.labelUsername.Size = new System.Drawing.Size(113, 20);
+            this.labelUsername.Size = new System.Drawing.Size(102, 24);
             this.labelUsername.TabIndex = 1;
             this.labelUsername.Text = "Username";
             // 
@@ -71,14 +69,14 @@ namespace Ewidencja
             // 
             this.textBoxUsername.Location = new System.Drawing.Point(221, 144);
             this.textBoxUsername.Name = "textBoxUsername";
-            this.textBoxUsername.Size = new System.Drawing.Size(265, 28);
+            this.textBoxUsername.Size = new System.Drawing.Size(265, 30);
             this.textBoxUsername.TabIndex = 2;
             // 
             // textBoxPassword
             // 
             this.textBoxPassword.Location = new System.Drawing.Point(221, 233);
             this.textBoxPassword.Name = "textBoxPassword";
-            this.textBoxPassword.Size = new System.Drawing.Size(265, 28);
+            this.textBoxPassword.Size = new System.Drawing.Size(265, 30);
             this.textBoxPassword.TabIndex = 3;
             // 
             // buttonLogin
@@ -99,7 +97,7 @@ namespace Ewidencja
             this.labelPassword.AutoSize = true;
             this.labelPassword.Location = new System.Drawing.Point(83, 236);
             this.labelPassword.Name = "labelPassword";
-            this.labelPassword.Size = new System.Drawing.Size(113, 20);
+            this.labelPassword.Size = new System.Drawing.Size(97, 24);
             this.labelPassword.TabIndex = 5;
             this.labelPassword.Text = "Password";
             // 
@@ -119,10 +117,10 @@ namespace Ewidencja
             // labelWelcome
             // 
             this.labelWelcome.AutoSize = true;
-            this.labelWelcome.Font = new System.Drawing.Font("1942 report", 18F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic))), System.Drawing.GraphicsUnit.Point);
+            this.labelWelcome.Font = new System.Drawing.Font("Arial", 18F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic))), System.Drawing.GraphicsUnit.Point);
             this.labelWelcome.Location = new System.Drawing.Point(66, 47);
             this.labelWelcome.Name = "labelWelcome";
-            this.labelWelcome.Size = new System.Drawing.Size(316, 60);
+            this.labelWelcome.Size = new System.Drawing.Size(222, 68);
             this.labelWelcome.TabIndex = 7;
             this.labelWelcome.Text = "Zaloguj się lub\r\nutwórz konto!";
             // 
@@ -136,7 +134,7 @@ namespace Ewidencja
             this.labelFeedback.ForeColor = System.Drawing.Color.Red;
             this.labelFeedback.Location = new System.Drawing.Point(18, 294);
             this.labelFeedback.Name = "labelFeedback";
-            this.labelFeedback.Size = new System.Drawing.Size(178, 20);
+            this.labelFeedback.Size = new System.Drawing.Size(88, 24);
             this.labelFeedback.TabIndex = 8;
             this.labelFeedback.Text = "             ";
             this.labelFeedback.Visible = false;
@@ -160,7 +158,7 @@ namespace Ewidencja
             this.Controls.Add(this.textBoxUsername);
             this.Controls.Add(this.labelUsername);
             this.Controls.Add(this.pictureBox1);
-            this.Font = new System.Drawing.Font("1942 report", 12F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point);
+            this.Font = new System.Drawing.Font("Arial", 12F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Name = "LoginForm";
             this.Text = "LoginForm";

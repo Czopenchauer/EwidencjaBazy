@@ -6,9 +6,10 @@
         public const string Zameldowanie = "Zameldowanie";
         public const string Wyjazd = "Zgloszenie wyjazdu";
         public const string DanePesel = "Udostepnienie danych";
+        public const string Wymeldowanie = "Wymeldowanie";
 
         public const string Przyjeto = "Przyjety";
-        public const string Odrzucono = "Odrzucono";
+        public const string Odrzucono = "Odrzucony";
         public const string Oczekujacy = "Oczekujacy";
     }
 }

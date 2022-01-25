@@ -45,7 +45,6 @@ namespace Ewidencja
                 MessageBox.Show("Wystąpił błąd podczas pobierania formularza.");
                 return;
             }
-
             SelectedWniosek = res;
             richTextBoxWniosek.Text = res.Wniosek;
             richTextBoxWniosek.Visible = true;

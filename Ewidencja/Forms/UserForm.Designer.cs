@@ -51,7 +51,7 @@ namespace Ewidencja
             this.tabControlUser.Location = new System.Drawing.Point(0, 0);
             this.tabControlUser.Name = "tabControlUser";
             this.tabControlUser.SelectedIndex = 0;
-            this.tabControlUser.Size = new System.Drawing.Size(849, 555);
+            this.tabControlUser.Size = new System.Drawing.Size(817, 551);
             this.tabControlUser.TabIndex = 0;
             // 
             // tabPageWnioski
@@ -61,7 +61,7 @@ namespace Ewidencja
             this.tabPageWnioski.Location = new System.Drawing.Point(4, 35);
             this.tabPageWnioski.Name = "tabPageWnioski";
             this.tabPageWnioski.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPageWnioski.Size = new System.Drawing.Size(841, 516);
+            this.tabPageWnioski.Size = new System.Drawing.Size(809, 512);
             this.tabPageWnioski.TabIndex = 0;
             this.tabPageWnioski.Text = "Wnioski";
             this.tabPageWnioski.UseVisualStyleBackColor = true;
@@ -73,7 +73,7 @@ namespace Ewidencja
             this.textBoxWniosek.Location = new System.Drawing.Point(3, 3);
             this.textBoxWniosek.Name = "textBoxWniosek";
             this.textBoxWniosek.ReadOnly = true;
-            this.textBoxWniosek.Size = new System.Drawing.Size(354, 510);
+            this.textBoxWniosek.Size = new System.Drawing.Size(354, 506);
             this.textBoxWniosek.TabIndex = 1;
             this.textBoxWniosek.Text = "";
             this.textBoxWniosek.Visible = false;
@@ -84,12 +84,12 @@ namespace Ewidencja
             this.dataGridViewWnioski.AllowUserToDeleteRows = false;
             this.dataGridViewWnioski.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dataGridViewWnioski.Dock = System.Windows.Forms.DockStyle.Right;
-            this.dataGridViewWnioski.Location = new System.Drawing.Point(396, 3);
+            this.dataGridViewWnioski.Location = new System.Drawing.Point(364, 3);
             this.dataGridViewWnioski.Name = "dataGridViewWnioski";
             this.dataGridViewWnioski.ReadOnly = true;
             this.dataGridViewWnioski.RowHeadersWidth = 51;
             this.dataGridViewWnioski.RowTemplate.Height = 29;
-            this.dataGridViewWnioski.Size = new System.Drawing.Size(442, 510);
+            this.dataGridViewWnioski.Size = new System.Drawing.Size(442, 506);
             this.dataGridViewWnioski.TabIndex = 0;
             this.dataGridViewWnioski.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridViewWnioski_CellContentClick);
             // 
@@ -140,9 +140,10 @@ namespace Ewidencja
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(12F, 26F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(849, 555);
+            this.ClientSize = new System.Drawing.Size(817, 551);
             this.Controls.Add(this.tabControlUser);
             this.Font = new System.Drawing.Font("MV Boli", 12F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "UserForm";
             this.Text = "UserForm";

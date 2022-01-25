@@ -18,10 +18,70 @@ namespace Ewidencja
             InitializeComponent();
             this.loginManager = loginManager ?? throw new ArgumentNullException(nameof(loginManager));
             this.userManager = userManager ?? throw new ArgumentNullException(nameof(loginManager));
+
+
         }
 
         private async void UserForm_LoadAsync(object sender, EventArgs e)
         {
+            #region Bóg mnie będzie sądził
+            // shit do dodawania formularzy do bazy
+            // pesel
+/*             var formularz =
+                 "Imię: \n" +
+                 "Drugie imię: \n" +
+                 "Nazwisko: \n" +
+                 "Płeć: \n" +
+                 "Data urodzenia: \n" +
+                 "Miejsce urodzenia: \n" +
+                 "Kraj urodzenia: \n";
+             // zameldowanie
+             var formularz2 =
+                 "Imię: \n" +
+                 "Drugie imię: \n" +
+                 "Nazwisko: \n" +
+                 "Nr PESEL: \n" +
+                 "Kraj zamieszkania: \n" +
+                 "Ulica: \n" +
+                 "Nr domu: \n" +
+                 "Nr lokalu: \n" +
+                 "Kod pocztowy: \n" +
+                 "Miejscowość: ";
+
+             // wymeldowanie
+             var formularz3 =
+                 "Imię: \n" +
+                 "Drugie imię: \n" +
+                 "Nazwisko: \n" +
+                 "Nr PESEL: \n" +
+                 "Kraj urodzenia: \n" +
+                 "Data urodzenia: \n";
+
+             // wyjazd
+             var formularz4 =
+                                 "Imię: \n" +
+                                 "Drugie imię: \n" +
+                                 "Nazwisko: \n" +
+                                 "Nr PESEL: \n" +
+                                 "Data wyjazdu: \n" +
+                                 "Kraj wyjazdu: \n" +
+                                 "Od: \n" +
+                                 "Do: \n";
+
+             var formularz5 = "Imię: \n" +
+                                 "Drugie imię: \n" +
+                                 "Nazwisko: \n" +
+                                 "Nr PESEL: \n";
+
+             await userManager.AddFormularz(formularz, 1);
+             await userManager.AddFormularz(formularz2, 2);
+             await userManager.AddFormularz(formularz3, 3);
+             await userManager.AddFormularz(formularz4, 4);
+             await userManager.AddFormularz(formularz5, 6);*/
+
+            #endregion
+
+
             var types = await userManager.GetTypesAsync();
             foreach(var typ in types)
             {
@@ -37,6 +97,7 @@ namespace Ewidencja
 
         private async void dataGridViewWnioski_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
+            dataGridViewWnioski.Enabled = false;
             if (e.RowIndex == -1)
                 return;
 
@@ -52,10 +113,14 @@ namespace Ewidencja
 
             textBoxWniosek.Text = res;
             textBoxWniosek.Visible = true;
+            dataGridViewWnioski.Enabled = true;
+
         }
 
         private async void buttonZloz_Click(object sender, EventArgs e)
         {
+            dataGridViewWnioski.Enabled = false;
+
             var template = richTextBoxZloz.Text;
 
             if (String.IsNullOrEmpty(template))
@@ -80,34 +145,11 @@ namespace Ewidencja
 
             dataGridViewWnioski.DataSource = await userManager.GetUserWnioskiAsync(loginManager.SignInUser.Id);
 
-            // shit do dodawania formularzy do bazy
-            /*            var formularz =
-                            "Imię: \n" +
-                            "Drugie imię: \n" +
-                            "Nazwisko: \n" +
-                            "Płeć: \n" +
-                            "Data urodzenia: \n" +
-                            "Kraj miejsca zamieszkania: \n";
+            dataGridViewWnioski.Enabled = true;
+            MessageBox.Show("Udało się złożyć wniosku");
 
-                        var formularz2 =
-                            "Imię: \n" +
-                            "Drugie imię: \n" +
-                            "Nazwisko: \n" +
-                            "Nr PESEL: \n" +
-                            "Kraj urodzenia: \n" +
-                            "Data urodzenia: \n" +
-                            "Kraj poprzedniego miejsca zamieszkania: \n" +
-                            "Ulica: \n" +
-                            "Nr domu: \n" +
-                            "Nr lokalu: \n" +
-                            "Kod pocztowy: \n" +
-                            "Miejscowość: ";
-
-                        await userManager.AddFormularz(formularz2, 1);
-
-                        await userManager.AddFormularz(formularz, 2);*/
         }
-        
+
         private async void comboBoxTyp_SelectedIndexChanged(object sender, EventArgs e)
         {
             string selected = (string)comboBoxTyp.SelectedItem;

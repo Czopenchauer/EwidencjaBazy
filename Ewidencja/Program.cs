@@ -1,4 +1,4 @@
-using Ewidencja.Database;
+﻿using Ewidencja.Database;
 using Ewidencja.Database.Enums;
 using Ewidencja.Infrastructure.Interfaces;
 using Ewidencja.Infrastructure.Managers;
@@ -15,9 +15,7 @@ namespace Ewidencja
 {
     static class Program
     {
-
         public static IConfiguration Configuration;
-
         [STAThread]
         static void Main()
         {
@@ -31,21 +29,15 @@ namespace Ewidencja
 
             if (isDevelopment)
             {
-                //builder.AddUserSecrets<ConnectionHandler>();
                 builder.AddUserSecrets("41109e72-b7d9-4ca3-8c8d-5e84e98ab64a"); // to sekret!! PROSZE NIE CZYTAC!!!1!!1
-
             }
             Configuration = builder.Build();
-
-            //ConnectionHandler = Configuration.GetSection("ConnectionHandler").Get<ConnectionHandler>();
 
             Application.SetHighDpiMode(HighDpiMode.SystemAware);
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            //Application.Run(new Form1());
 
             var services = new ServiceCollection();
-
 
             ConfigureServices(services);
 
@@ -76,13 +68,10 @@ namespace Ewidencja
             services.AddScoped<IUserManager, UserManager>();
             services.AddScoped<IUrzednikManager, UrzednikManager>();
 
-            //services.Configure<ConnectionHandler>(Configuration.GetSection(nameof(ConnectionHandler)));
             services.AddScoped<UrzednikForm>();
             services.AddScoped<UserForm>();
             services.AddScoped<LoginForm>();
             services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(Configuration["DatabaseConnection"]));
-            //services.AddSingleton(Configuration);
-            //services.AddSingleton(ConnectionHandler);
         }
     }
 }
